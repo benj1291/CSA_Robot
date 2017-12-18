@@ -56,8 +56,7 @@ namespace Servers {
 
         private void evaluateRequest(Object o) {
             TcpClient client = (TcpClient)o;
-            NetworkStream netStream = client.GetStream();
-            StreamReader reqReader = new StreamReader(netStream);
+            StreamReader reqReader = new StreamReader(client.GetStream());
             String request = "";
 
             // Only read the first header part, contains everything needed
@@ -66,32 +65,47 @@ namespace Servers {
             // Check if the request is a GET request for /history
             if (request.ToUpper().Contains("GET") && request.ToUpper().Contains("/HISTORY")) {
                 Console.WriteLine("Valid request received...");
-
-                String historyData = "";
-                NetworkStream ns = client.GetStream();
-                StreamReader sr = new StreamReader("D:/history.txt", Encoding.ASCII);
-                StreamWriter sw = new StreamWriter(ns);
-
-                // Prepare StreamWriter
-                sw.AutoFlush = true;
-
-                // Read all data from file and close StreamReader
-                historyData = sr.ReadToEnd();
-                sr.Close();
-
-                // Replace placeholder with actual data and sent to requester
-                this.htmlResponse = this.htmlResponse.Replace("$data", historyData);
-                sw.WriteLine("HTTP/1.1 200 OK");
-                sw.WriteLine("Content-type: text/html");
-                sw.WriteLine("Content-Length: " + this.htmlResponse.Length);
-                sw.WriteLine("Connection: close");
-                sw.WriteLine("");
-                sw.WriteLine(this.htmlResponse);
-
-                // Close StreamWriter and close client connection
-                sw.Close();
-                client.Close();
+                this.createResponse(client);
             }
+        }
+
+        private void createResponse(TcpClient client) {
+            StreamWriter sw = new StreamWriter(client.GetStream());
+            String historyData = this.readHistoryFile();
+
+            // Prepare StreamWriter
+            sw.AutoFlush = true;
+
+            // Replace placeholder with actual data and sent to requester
+            this.htmlResponse = this.htmlResponse.Replace("$data", historyData);
+            sw.WriteLine(this.getHttpHeader());
+            sw.WriteLine(this.htmlResponse);
+
+            // Close StreamWriter and close client connection
+            sw.Close();
+            client.Close();
+        }
+
+        private String readHistoryFile() {
+            StreamReader sr = new StreamReader("D:/history.txt", Encoding.ASCII);
+            String historyData;
+
+            historyData = sr.ReadToEnd();
+            sr.Close();
+
+            return historyData;
+        }
+
+        private String getHttpHeader() {
+            String header;
+
+            header = "HTTP/1.1 200 OK" + Environment.NewLine +
+                "Content-Type: text/html" + Environment.NewLine +
+                "Content-Length: " + this.htmlResponse.Length + Environment.NewLine +
+                "Connection: close" + Environment.NewLine +
+                Environment.NewLine;
+
+            return header;
         }
     }
 }

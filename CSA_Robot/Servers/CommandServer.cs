@@ -35,15 +35,15 @@ namespace Servers {
             Console.WriteLine("Listening for connections...");
 
             client = server.AcceptTcpClient();
-            Console.WriteLine("Found client");
             listClients.Add(client);
+            Console.WriteLine("Connection established...");
+
             ThreadPool.QueueUserWorkItem(this.CheckForMessages, client);
         }
 
         private void CheckForMessages(Object o) {
             TcpClient client = (TcpClient)o;
-            NetworkStream netStream = client.GetStream();
-            StreamReader sr = new StreamReader(netStream);
+            StreamReader sr = new StreamReader(client.GetStream());
             StreamWriter sw = new StreamWriter("D:/commands.txt", true);
             String dataString;
 
