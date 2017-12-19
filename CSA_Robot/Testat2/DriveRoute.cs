@@ -133,6 +133,10 @@ namespace Testat2
 
         private void Run(List<DriveCommand> driveCommands)
         {
+            if (Robot.Drive != null)
+            {
+                Robot.Drive.Position = new PositionInfo(0, 0, 0);
+            }
             DriveLog.RepressLog();
             DriveLog.CreateLog();
             DriveLog.AddLogEntry(DateTime.Now.ToString("dd/MM/yyyy-hh:mm:ss.fff") + ";" + Robot.Drive.DriveInfo.Position.X.ToString() + ";" + Robot.Drive.DriveInfo.Position.Y.ToString());
