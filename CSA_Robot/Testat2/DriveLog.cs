@@ -19,7 +19,7 @@ namespace Testat2
                 File.Delete("log.csv");
             }
             streamWriter = new StreamWriter("log.csv", true);
-            streamWriter.WriteLine("Team 12");
+            streamWriter.WriteLine("Team 13");
         }
 
         public void AddLogEntry(string log)
