@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace TestRobotRoute
+namespace Testat2
 {
     class DriveCommand
     {
@@ -149,14 +149,14 @@ namespace TestRobotRoute
                 
                 case "TrackArcLeft":
                     driveCommand.DriveCommandTyp = DriveCommandTyp.TrackArcLeft;
-                    driveCommand.ValueA = Convert.ToInt32(values[1]);
-                    driveCommand.ValueL = float.Parse(values[2]);
+                    driveCommand.ValueA = Convert.ToInt32(values[2]);
+                    driveCommand.ValueL = float.Parse(values[1]);
                     break;
                 
                 case "TrackArcRight":
                     driveCommand.DriveCommandTyp = DriveCommandTyp.TrackArcRight;
-                    driveCommand.ValueA = Convert.ToInt32(values[1]);
-                    driveCommand.ValueL = float.Parse(values[2]);
+                    driveCommand.ValueA = Convert.ToInt32(values[2]);
+                    driveCommand.ValueL = float.Parse(values[1]);
                     break;
             }
 

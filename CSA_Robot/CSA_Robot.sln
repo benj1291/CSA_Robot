@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMotor", "TestMotor\Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Servers", "Servers\Servers.csproj", "{E7C5F598-6DFA-4C49-AED0-0D292DA2EDC5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestRobotRoute", "TestRobotRoute\TestRobotRoute.csproj", "{4DD457F6-9377-44C3-B382-5F5EBA35F2CC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testat2", "Testat2\Testat2.csproj", "{ED292AD3-DFF0-4899-B16F-5683A7227509}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +69,18 @@ Global
 		{22A861AD-17B3-4B17-8D50-46A512D07D49}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22A861AD-17B3-4B17-8D50-46A512D07D49}.Release|Any CPU.Build.0 = Release|Any CPU
 		{22A861AD-17B3-4B17-8D50-46A512D07D49}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{E7C5F598-6DFA-4C49-AED0-0D292DA2EDC5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7C5F598-6DFA-4C49-AED0-0D292DA2EDC5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7C5F598-6DFA-4C49-AED0-0D292DA2EDC5}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{E7C5F598-6DFA-4C49-AED0-0D292DA2EDC5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7C5F598-6DFA-4C49-AED0-0D292DA2EDC5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7C5F598-6DFA-4C49-AED0-0D292DA2EDC5}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{ED292AD3-DFF0-4899-B16F-5683A7227509}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED292AD3-DFF0-4899-B16F-5683A7227509}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED292AD3-DFF0-4899-B16F-5683A7227509}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{ED292AD3-DFF0-4899-B16F-5683A7227509}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED292AD3-DFF0-4899-B16F-5683A7227509}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED292AD3-DFF0-4899-B16F-5683A7227509}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
