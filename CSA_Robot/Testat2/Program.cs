@@ -11,6 +11,7 @@ namespace Testat2
     class Program
     {
         static DriveRoute driveRoute;
+        static CommandServer server;
 
         static void Main(string[] args)
         {
@@ -19,12 +20,13 @@ namespace Testat2
 
             driveRoute = new DriveRoute();
             driveRoute.PathDriveRouteFile = "commands.csv";
+            driveRoute.RobotDone += AcceptMessages;
 
             HTTPLogServer hs = new HTTPLogServer(8080);
             new Thread(hs.Start).Start();
 
-            var commandServer = new CommandServer(IPAddress.Any, 4778);
-            commandServer.StartRobot += StartDriveRobot;
+            server = new CommandServer(IPAddress.Any, 4778);
+            server.StartRobot += StartDriveRobot;
         }
 
         private static void StartDriveRobot(object sender, EventArgs e)
@@ -38,6 +40,10 @@ namespace Testat2
             //}
             //streamReader.Close();
             driveRoute.Start();
+        }
+
+        private static void AcceptMessages(object sender, EventArgs e) {
+            server.SendDoneMessage();
         }
 
     }

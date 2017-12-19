@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 using System.Net.Sockets;
 using System.Net;
 using System.IO;
+using System.Threading;
+
+// Verbesserungsmöglichkeiten: Mehr abstrahieren
+// -> Momentan wird spezifisch auf "ROBOTDONE" gehört
+// -> Generell auf Messages hören und ein generelles Event schicken.
 
 namespace RobotClient {
     public class Client {
@@ -16,8 +21,10 @@ namespace RobotClient {
         private NetworkStream netStream;
         private BufferedStream bufferStream;
         private StreamWriter sw;
+        private StreamReader sr;
 
         public event EventHandler Connection;
+        public event EventHandler RobotDone;
 
         public Client(IPAddress ipAddress, int port) {
             this.ipAddress = ipAddress;
@@ -27,10 +34,13 @@ namespace RobotClient {
             this.netStream = this.tcpClient.GetStream();
             this.bufferStream = new BufferedStream(this.netStream);
             this.sw = new StreamWriter(this.bufferStream);
+            this.sr = new StreamReader(this.bufferStream);
 
             if (this.tcpClient.Connected) {
                 this.onConnection(new EventArgs());
             }
+
+            ThreadPool.QueueUserWorkItem(o => this.ListenForDone());
         }
 
         public IPAddress IpAddress {
@@ -60,8 +70,33 @@ namespace RobotClient {
             this.sw.WriteLine(data);
             this.sw.Flush();
         }
+        
+        private void ListenForDone() {
+            String dataString;
+
+            while (this.tcpClient.Connected) {
+                try {
+
+                    dataString = sr.ReadLine();
+
+                    if (dataString != String.Empty && dataString != null) {
+                        if (dataString.ToUpper().Equals("ROBOTDONE")) {
+                            // Send event
+                            this.onRobotDone(new EventArgs());
+                        }
+                    }
+                } catch (IOException e) {
+                    Console.WriteLine("Error has occured: " + e.Message);
+                }
+            }
+        }
+
         protected virtual void onConnection(EventArgs e) {
             this.Connection?.Invoke(this, e);
+        }
+        
+        protected virtual void onRobotDone(EventArgs e) {
+            this.RobotDone?.Invoke(this, e);
         }
     }
 }

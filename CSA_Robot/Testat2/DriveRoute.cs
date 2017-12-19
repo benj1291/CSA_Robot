@@ -16,6 +16,8 @@ namespace Testat2
         private Robot _robot;
         private DriveLog _driveLog;
 
+        public event EventHandler RobotDone;
+
         public DriveRoute()
         {
             this.DriveLog = new DriveLog();
@@ -109,6 +111,10 @@ namespace Testat2
             this.Done = true;
         }
 
+        protected virtual void onRobotDone(EventArgs e) {
+            this.RobotDone?.Invoke(this, e);
+        }
+
         private List<DriveCommand> encodeDriveCommand()
         {
             var listDriveCommand = new List<DriveCommand>();
@@ -136,6 +142,7 @@ namespace Testat2
                 dc.Run();
             }
             DriveLog.CloseLog();
+            this.onRobotDone(new EventArgs());
         }
     }
 }

@@ -7,13 +7,18 @@ using System.Net;
 using System.Threading;
 using System.IO;
 
-namespace Testat2
-{
+// Verbesserungsmöglichkeiten: StreamWriter Threadsicher machen
+
+namespace Testat2 {
     public class CommandServer {
+        private const String COMMAND_FILE = "commands.csv";
+
         private IPAddress ipAddress;
         private Int32 port = 4778;
         private TcpListener server;
+        private TcpClient client;
         private List<TcpClient> listClients;
+        private StreamWriter sw;
 
         public event EventHandler StartRobot;
 
@@ -31,32 +36,45 @@ namespace Testat2
         }
 
         public void ListenForClients() {
-            TcpClient client;
             server.Start();
             Console.WriteLine("Listening for connections...");
 
-            client = server.AcceptTcpClient();
-            listClients.Add(client);
+            this.client = server.AcceptTcpClient();
+            listClients.Add(this.client);
             Console.WriteLine("Connection established...");
 
-            ThreadPool.QueueUserWorkItem(this.CheckForMessages, client);
+            ThreadPool.QueueUserWorkItem(o => this.CheckForMessages());
         }
 
-        private void CheckForMessages(Object o) {
-            TcpClient client = (TcpClient)o;
-            StreamReader sr = new StreamReader(client.GetStream());
+        public void SendDoneMessage() {
+            StreamWriter clientWriter = new StreamWriter(this.client.GetStream());
 
-            //von Benj
-            if (File.Exists("command.csv"))
-            {
-                File.Delete("command.csv");
-                Console.WriteLine("Command File gelöscht");
+            reopenFile();
+
+            clientWriter.WriteLine("ROBOTDONE");
+            clientWriter.Flush();
+        }
+
+        private void reopenFile() {
+            if (File.Exists(COMMAND_FILE)) {
+                File.Delete(COMMAND_FILE);
             }
 
-            StreamWriter sw = new StreamWriter("commands.csv", true);
-            String dataString;
-
+            sw = new StreamWriter(COMMAND_FILE, true);
             sw.AutoFlush = true;
+        }
+
+        private void CheckForMessages() {
+            StreamReader sr = new StreamReader(this.client.GetStream());
+
+            //von Benj
+            if (File.Exists(COMMAND_FILE)) {
+                File.Delete(COMMAND_FILE);
+            }
+
+            sw = new StreamWriter(COMMAND_FILE, true);
+            sw.AutoFlush = true;
+            String dataString;
 
             try {
                 // Loop until client isn't connected anymore
@@ -67,14 +85,14 @@ namespace Testat2
                     // Only response to actual data
                     if (dataString != String.Empty && dataString != null) {
                         if (dataString.ToUpper().Equals("START")) {
-                            // Send event and close client
+                            // Send event
                             sw.Close();
                             this.onStartRobot(new EventArgs());
-                            client.Close();
                         } else {
                             sw.WriteLine(dataString);
                         }
                     }
+
                 }
 
             } catch (Exception ex) {

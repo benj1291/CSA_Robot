@@ -41,7 +41,24 @@ namespace RobotClient {
                 grpBasic.Enabled = false;
                 grpProfessional.Enabled = false;
                 statusClient.Text = "Connection: Closed";
+
+                MessageBox.Show("The server closed the connection.", "Server closed connection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
+        }
+
+        private void resetState(object sender, EventArgs e) {
+            if (grpBasic.InvokeRequired) {
+                grpBasic.BeginInvoke(new MethodInvoker(() => resetState(sender, e)));
+            } else {
+                grpBasic.Enabled = true;
+            }
+
+            if (grpProfessional.InvokeRequired) {
+                grpProfessional.BeginInvoke(new MethodInvoker(() => resetState(sender, e)));
+            } else {
+                grpProfessional.Enabled = true;
+            }
+            Console.WriteLine("Received done message");
         }
 
         private void cmdConnect_Click(object sender, EventArgs e) {
@@ -56,6 +73,7 @@ namespace RobotClient {
             port = (int)numPort.Value;
             this.client = new Client(serverIP, port);
             this.client.Connection += connectionChanged;
+            this.client.RobotDone += resetState;
 
             // Enable other elements
             if (this.client.IsConnected) {
@@ -204,6 +222,15 @@ namespace RobotClient {
             listHistory.Items.Add(command);
             txtCommand.Clear();
             txtCommand.Focus();
+
+            if (this.command.ToUpper().Equals(START.ToUpper())) {
+                grpBasic.Enabled = false;
+                txtAngle.Clear();
+                txtDistance.Clear();
+                grpProfessional.Enabled = false;
+                listHistory.Items.Add("Robot running, please wait...");
+                listHistory.Items.Add("");
+            }
         }
 
         private void txtAngle_KeyPress(object sender, KeyPressEventArgs e) {
@@ -270,9 +297,17 @@ namespace RobotClient {
 
                 this.command += angle;
             }
-
             this.client.Send(this.command);
             listHistory.Items.Add(this.command);
+
+            if (this.command.ToUpper().Equals(START.ToUpper())) {
+                grpBasic.Enabled = false;
+                txtAngle.Clear();
+                txtDistance.Clear();
+                grpProfessional.Enabled = false;
+                listHistory.Items.Add("Robot running, please wait...");
+                listHistory.Items.Add("");
+            }
         }
     }
 }
