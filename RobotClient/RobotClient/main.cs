@@ -168,7 +168,7 @@ namespace RobotClient {
                     command = TRACKTURNRIGHT;
                 }
 
-                command += angle + ";";
+                command += angle;
 
             } else if (commandPart.Equals("AL") || commandPart.Equals("AR")) {
                 if (arrCommand.Length < 3) {
@@ -187,7 +187,7 @@ namespace RobotClient {
                     command = TRACKARCRIGHT;
                 }
 
-                command += angle + ";" + distance + ";";
+                command += angle + ";" + distance;
 
             } else if (commandPart.Equals("S")) {
                 if (arrCommand.Length < 1) {
@@ -253,7 +253,11 @@ namespace RobotClient {
                     return;
                 }
 
-                this.command += distance + ";";
+                this.command += distance;
+                if (this.reqAngle)
+                {
+                    this.command += ";";
+                }
             }
 
             if (this.reqAngle) {
@@ -264,7 +268,7 @@ namespace RobotClient {
                     return;
                 }
 
-                this.command += angle + ";";
+                this.command += angle;
             }
 
             this.client.Send(this.command);
